@@ -1,4 +1,4 @@
-package com.aigateway.config;
+package com.nimit.aigateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

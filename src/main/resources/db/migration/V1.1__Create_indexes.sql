@@ -6,7 +6,6 @@ CREATE INDEX idx_api_requests_timestamp ON api_requests(request_timestamp);
 CREATE INDEX idx_api_requests_metadata ON api_requests USING gin (metadata);
 
 -- User lookup optimization
-CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_last_login ON users(last_login) WHERE is_active = true;
 

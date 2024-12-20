@@ -1,12 +1,22 @@
 spring:
+  config:
+    import:
+      - file:.env[.properties]
+
   application:
     name: aigateway
+
+  app:
+    baseUrl: http://localhost:8080
 
   server:
     port: 8080
 
   flyway:
     enabled: true
+    url: jdbc:postgresql://localhost:5432/data
+    user: postgres
+    password: postgres
     locations: classpath:db/migration
     baseline-on-migrate: true
 
@@ -16,11 +26,41 @@ spring:
       show-sql: true
       format_sql: true
 
+  # datasource:
+  #   url: jdbc:postgresql://postgres:5432/data
+  #   username: postgres
+  #   password: postgres
   datasource:
-    url: jdbc:postgresql://postgres:5432/postgres
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost:5432/data
     username: postgres
     password: postgres
+    hikari:
+      maximum-pool-size: 4
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 20000
+      pool-name: PostgresHikariPool
+      max-lifetime: 1200000
+      auto-commit: true
+      # data-source-properties:
+      #   cachePrepStmts: true
+      #   prepStmtCacheSize: 250
+      #   prepStmtCacheSqlLimit: 2048
+      #   useServerPrepStmts: true
 
   redis:
     host: rediscache
     port: 6379
+
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
+    username: ${MAIL_SERVER_USERNAME}
+    password: ${MAIL_SERVER_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
