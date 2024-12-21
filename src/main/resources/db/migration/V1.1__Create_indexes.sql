@@ -10,5 +10,9 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_last_login ON users(last_login) WHERE is_active = true;
 
 -- API key lookup
-CREATE INDEX idx_api_keys_user_id ON api_keys(user_id);
-CREATE INDEX idx_api_keys_provider ON api_keys(provider);
+CREATE INDEX idx_user_id ON api_keys(user_id);
+CREATE INDEX idx_key_hash ON api_keys(key_hash);
+
+-- Provider API key lookup
+CREATE INDEX idx_api_keys_user_id ON provider_api_keys(user_id);
+CREATE INDEX idx_api_keys_provider ON provider_api_keys(provider);

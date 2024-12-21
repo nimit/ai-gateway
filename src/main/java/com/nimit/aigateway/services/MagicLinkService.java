@@ -47,21 +47,19 @@ public class MagicLinkService {
     }
 
     @Transactional
-    public Optional<User> validateToken(String token) {
+    public User validateToken(String token) {
         String email = redisTemplate.opsForValue().get(MAGIC_LINK_PREFIX + token);
 
-        if (email != null) {
-            redisTemplate.delete(MAGIC_LINK_PREFIX + token);
-
-            // User not found exception thrown when user sends a random token
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            // The last_login update trigger will handle the timestamp
-            user.setLastLogin(LocalDateTime.now());
-            return Optional.of(userRepository.save(user));
+        if (email == null) {
+            throw new RuntimeException("User not found");
         }
+        redisTemplate.delete(MAGIC_LINK_PREFIX + token);
 
-        return Optional.empty();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setLastLogin(LocalDateTime.now());
+        return userRepository.save(user);
+
     }
 }

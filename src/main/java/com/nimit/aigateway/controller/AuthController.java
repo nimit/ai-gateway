@@ -1,8 +1,13 @@
 package com.nimit.aigateway.controller;
 
 import com.nimit.aigateway.services.MagicLinkService;
+import com.nimit.aigateway.services.SessionService;
+import com.nimit.aigateway.model.User;
+import com.nimit.aigateway.model.UserSession;
 import com.nimit.aigateway.services.EmailService;
+import com.nimit.aigateway.services.JwtService;
 import jakarta.mail.MessagingException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final MagicLinkService magicLinkService;
     private final EmailService emailService;
+    private final JwtService jwtService;
+    private final SessionService sessionService;
 
-    public AuthController(MagicLinkService magicLinkService, EmailService emailService) {
-        System.out.println("AuthController Instantiated");
+    public AuthController(MagicLinkService magicLinkService, EmailService emailService, JwtService jwtService,
+            SessionService sessionService) {
+        System.out.println("DEBUG: AuthController Instantiated");
         this.magicLinkService = magicLinkService;
         this.emailService = emailService;
+        this.jwtService = jwtService;
+        this.sessionService = sessionService;
     }
 
     @PostMapping("/login")
@@ -32,8 +42,22 @@ public class AuthController {
 
     @GetMapping("/verify")
     public ResponseEntity<?> verify(@RequestParam String token) {
-        return magicLinkService.validateToken(token)
-                .map(user -> ResponseEntity.ok().body("Login successful"))
-                .orElse(ResponseEntity.badRequest().body("Invalid or expired token"));
+        User user;
+        try {
+            user = magicLinkService.validateToken(token);
+            String email = user.getEmail();
+            // Generate JWT
+            String jwt = jwtService.generateToken(email);
+
+            // Create and save session
+            UserSession session = user.createSession();
+            sessionService.saveUserSession(email, session);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                    .body("Login successful");
+        } catch (Exception err) {
+            return ResponseEntity.badRequest().body("Invalid or expired token");
+        }
     }
 }

@@ -13,7 +13,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
     // TODO: MAKE THIS NON-OPTIONAL
-    @Value("${app.baseUrl:http://localhost:8080}")
+    @Value("${app.baseUrl}")
     private String baseUrl;
 
     public EmailService(JavaMailSender mailSender) {

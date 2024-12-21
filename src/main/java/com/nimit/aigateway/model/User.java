@@ -35,4 +35,12 @@ public class User {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public UserSession createSession() {
+        UserSession session = new UserSession();
+        session.setId(this.id);
+        session.setEmail(this.email);
+        session.setLastAccess(LocalDateTime.now());
+        return session;
+    }
 }

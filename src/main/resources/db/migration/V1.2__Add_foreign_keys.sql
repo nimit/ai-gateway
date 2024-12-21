@@ -1,5 +1,10 @@
 -- API Keys foreign keys
 ALTER TABLE api_keys
+    ADD CONSTRAINT fk_user
+    FOREIGN KEY (user_id) REFERENCES users(id);
+
+-- Provider API Keys foreign keys
+ALTER TABLE provider_api_keys
     DROP CONSTRAINT IF EXISTS api_keys_user_id_fkey,
     ADD CONSTRAINT fk_api_keys_user
     FOREIGN KEY (user_id)
