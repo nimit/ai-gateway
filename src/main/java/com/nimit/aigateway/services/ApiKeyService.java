@@ -40,7 +40,7 @@ public class ApiKeyService {
     apiKey.setKeyHash(keyHash);
     apiKey.setCreatedAt(LocalDateTime.now());
     apiKey.setIsActive(true);
-    apiKey.setRateLimitQuota(1000); // Default quota
+    apiKey.setRateLimitQuota(1000);
 
     apiKeyRepository.save(apiKey);
 

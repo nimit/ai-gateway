@@ -27,6 +27,7 @@ public class ApiKeyController {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<Map<String, String>> generateApiKey(
       @AuthenticationPrincipal UserDetails userDetails) {
+    System.out.println("DEBUG: IN generateApiKey");
     String apiKey = apiKeyService.generateApiKeyForUser(
         ((User) userDetails).getId());
 

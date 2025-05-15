@@ -7,8 +7,15 @@ import com.nimit.aigateway.model.UserSession;
 import com.nimit.aigateway.services.EmailService;
 import com.nimit.aigateway.services.JwtService;
 import jakarta.mail.MessagingException;
+
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,6 +58,11 @@ public class AuthController {
 
             // Create and save session
             UserSession session = user.createSession();
+            Authentication auth = new UsernamePasswordAuthenticationToken(
+                    user,
+                    null,
+                    session.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+            SecurityContextHolder.getContext().setAuthentication(auth);
             sessionService.saveUserSession(email, session);
 
             return ResponseEntity.ok()
