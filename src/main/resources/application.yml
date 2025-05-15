@@ -52,9 +52,10 @@ spring:
       #   prepStmtCacheSqlLimit: 2048
       #   useServerPrepStmts: true
 
-  redis:
-    host: rediscache
-    port: 6379
+  data:
+    redis:
+      host: rediscache
+      port: 6379
 
   mail:
     host: live.smtp.mailtrap.io
